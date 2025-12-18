@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  myapp:
+    image: "alvinjinsung/colab:ver3"
+    command: jupyter notebook --ip 0.0.0.0 --port 8888 --allow-root --NotebookApp.token=''
+    volumes:
+      - "./:/ws/external/"
+      - "/home/alvin/dataset:/ws/data"
+      - "/home/alvin/.cache/:/home/user/.cache/"
+      - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+      - "/etc/group:/etc/group:ro"
+      - "$HOME/.Xauthority:/root/.Xauthority:rw"
+    working_dir: /ws/external
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - DISPLAY=${DISPLAY}
+      - XAUTHORITY=/root/.Xauthority
+      - QT_X11_NO_MITSHM=1
+      - CUDA_VISIBLE_DEVICES=0
+      - CUDA_LAUNCH_BLOCKING=1
+      - LD_LIBRARY_PATH=/opt/hpcx/ompi/lib:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+      - WANDB_API_KEY=a05ecea339d73ab9557a2f973e4c79b01afc7b7a
+    ports:
+      - "7007:7007"
+      - "8888:8888"
+    network_mode: host
+    privileged: true
+    cap_add:
+      - SYS_PTRACE
+    group_add:
+      - audio
+      - video
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            capabilities: [gpu]
+    shm_size: "12gb"
