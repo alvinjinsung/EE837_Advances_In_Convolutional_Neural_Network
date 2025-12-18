@@ -1,0 +1,8 @@
+.idea/
+*.iml
+data/
+*.tar.gz
+*.gz
+*.zip
+.ipynb_checkpoints/
+__pycache__/
